@@ -48,7 +48,7 @@ public class InstructionSet {
                 break;
 
             case 0x3000:
-                temp1 = opcode & 0x0F00;
+                temp1 = (opcode & 0x0F00 << 8);
                 temp2 = opcode & 0x00FF;
                 if ((m.getVx(temp1) != (temp2)))
                 {
@@ -86,7 +86,7 @@ public class InstructionSet {
 
             case 0x7000:
                 temp1 = opcode & 0x00FF;
-                temp2 = opcode & 0x0F00;
+                temp2 = (opcode & 0x0F00 << 8);
                 m.setVx(m.getVx(temp2), m.getVx(temp2) + temp1);
                 m.setPC(m.getPC()+2);
                 break;
@@ -106,7 +106,8 @@ public class InstructionSet {
                         break;
 
                     case 0x0002:
-                        m.setVx(opcode & 0x0F00, ((opcode & 0x0F00) & (opcode & 0x00F0)));
+                        temp1 = (opcode & 0x0F00 >> 8 ) ;
+                        m.setVx(temp1, (temp1 & (opcode & 0x00F0)));
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -161,7 +162,7 @@ public class InstructionSet {
                         throw new IllegalStateException("Unexpected value:");
                 }
             case 0x9000:
-                if (m.getVx(opcode & 0x0F00) != m.getVx(opcode & 0x00F0))
+                if (m.getVx((opcode & 0x0F00 >> 8)) != m.getVx((opcode & 0x00F0 >> 4)))
                 {
                     m.setPC(m.getPC()+2);
                 }
@@ -191,7 +192,7 @@ public class InstructionSet {
                 temp1 = rand.nextInt(0xFF);
 
                 //get a number 0 - 16 
-                temp3 = opcode & 0x0F00;
+                temp3 = (opcode & 0x0F00 >> 8);
                 
                 temp2 = temp1 & (opcode & 0x00FF);
 
