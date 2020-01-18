@@ -29,7 +29,10 @@ public class InstructionSet {
                 }
                 else if (opcode == 0x00E0)
                 {
-                    System.out.println("Screen Cleared!");
+                    for (int i = 0 ; i < m.getBin().length; i++)
+                    {
+                        m.setBinItem(0, i);
+                    }
                     break;
                 }
                 else {

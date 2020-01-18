@@ -2,18 +2,33 @@ package chip8functionality;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class RomRead
 {
     MemoryMap m = new MemoryMap();
+    String romName = "";
     public byte rom[] = new byte[255];
     public byte nextbyte [] = new byte[2];
     int inc = 0;
-
+    static int init = 0;
 
     void initBytes () throws IOException
     {
+        Path fileLocation = Paths.get("fontset.bin");
+        byte [] chip8_fontset = Files.readAllBytes(fileLocation);
+        m.setfont(chip8_fontset);
+        
+        if (init == 0)
+        {
+            System.out.println("Enter name of the ROM");
+            BufferedReader reader =
+            new BufferedReader(new InputStreamReader(System.in));
+            String romName = reader.readLine();
+            init++;
+        }
+
         rom = Files.readAllBytes(Paths.get("pong.rom"));
         this.setBytes();
     }
@@ -22,6 +37,5 @@ public class RomRead
     {
         m.setMemory(rom, m.getStartOfRom());
         m.setMemory(m.getFontSet(), 0x050);
-
     }
 }
