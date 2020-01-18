@@ -7,12 +7,12 @@ public class Timers {
 
     void setDT (int value)
     {
-        this.DT = value;
+        DT = value;
     }
 
     void setST (int value)
     {
-        this.ST = value;
+        ST = value;
     }
     int getDT()
     {

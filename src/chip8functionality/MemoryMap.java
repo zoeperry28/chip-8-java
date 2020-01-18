@@ -1,7 +1,4 @@
 package chip8functionality;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 
 
@@ -30,16 +27,16 @@ public class MemoryMap {
 
     void setBin (int [] new_bin)
     {
-        this.bin = new_bin;
+        bin = new_bin;
     }
 
     int [] getStack ()
     {
-        return this.stack;
+        return stack;
     }
     void setStackItem (int location, int value)
     {
-        this.stack[location] = value;
+        stack[location] = value;
     }
     byte [] getFontSet ()
     {
@@ -64,10 +61,10 @@ public class MemoryMap {
     }
 
     int getPC () throws IOException {
-        return this.pc;
+        return pc;
     }
     void setPC (int newPC) throws IOException {
-        this.pc = newPC;
+        pc = newPC;
     }
     int getVx (int loc)
     {
@@ -92,15 +89,15 @@ public class MemoryMap {
 
     void setMemoryArr (int[] new_memory)
     {
-        this.memory = new_memory;
+        memory = new_memory;
     }
 
-    void setMemory (@NotNull byte [] bytes, int location)
+    void setMemory (byte [] bytes, int location)
     {
         int temp = location;
        for (int i = 0; i < bytes.length; i++ )
        {
-           this.memory[temp] = bytes[i];
+           memory[temp] = bytes[i];
            temp++;
        }
     }

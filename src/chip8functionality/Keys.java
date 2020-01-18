@@ -1,6 +1,6 @@
 package chip8functionality;
 
-import java.awt.event.KeyEvent;
+//import java.awt.event.KeyEvent;
 
 public class Keys {
 

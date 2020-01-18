@@ -21,8 +21,7 @@ public class Main {
 
         /*
         This loop will get the opcode pointed to by the program counter
-            */
-
+        */
        // Graphics g = new Graphics();
         while(chip8Running)
         {

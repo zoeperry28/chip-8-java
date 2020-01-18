@@ -5,9 +5,13 @@ import chip8functionality.MemoryMap;
 import javax.swing.*;
 import java.awt.*;
 
-class Graphics extends JFrame {
+class Graphics extends JFrame 
+{
 
-    public Graphics()  {
+    private static final long serialVersionUID = 1L;
+
+    public Graphics() 
+    {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         add( new BoardPanel());          //add underlaying board
@@ -17,12 +21,14 @@ class Graphics extends JFrame {
     }
 
     public static void main(String[] args) {
-        new Graphics();
+       // new Graphics();
     }
 }
 
-class BoardPanel extends JPanel {
+class BoardPanel extends JPanel 
+{
 
+    private static final long serialVersionUID = 1L;
     public static final int LENGTH = 32;
     public static final int HEIGHT = 64;
     private final Color[] COLOR_ARRAY = {Color.decode("#000000"), Color.decode("#FFFFFF")};
@@ -51,8 +57,9 @@ class BoardPanel extends JPanel {
     }
 }
 
-class TileView extends JLabel {
-
+class TileView extends JLabel
+ {
+    private static final long serialVersionUID = 1L;
     public static final int SIZE = 100;
     TileView(Color color) {
         setPreferredSize(new Dimension(SIZE, SIZE));
