@@ -1,19 +1,22 @@
 package chip8functionality;
 
 import java.awt.*;
+import java.io.IOException;
+
 import javax.swing.*;
 
-public class graphics extends JPanel 
-{
-int x = 0; 
-int y = 0; 
-private static final long serialVersionUID = 1L;
-MemoryMap m = new MemoryMap () ; 
+public class graphics extends JPanel {
+    int x = 0;
+    int y = 0;
+    private static final long serialVersionUID = 1L;
+
+    MemoryMap m = new MemoryMap();
+    
     @Override
     public void paintComponent(Graphics g) {
-       super.paintComponent(g);  
+        super.paintComponents(g);
         
-       int [] bin = m.getBin();
+        int [] bin = m.getBin();
 
         for (int i = 0; i < bin.length; i++)
         {

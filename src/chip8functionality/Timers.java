@@ -36,7 +36,8 @@ public class Timers {
 
     int soundTimer () throws InterruptedException
     {
-        if (ST > 0) {
+        if (ST > 0) 
+        {
             Thread.sleep(1);
             ST--;
         }

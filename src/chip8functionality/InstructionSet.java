@@ -1,14 +1,19 @@
 package chip8functionality;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
+
 
 public class InstructionSet {
 
     // write out array of all the instructions available by number
 
-    int temp1, temp2, temp3 = 0;
+    int file_count = 0 ; 
 
+    int temp1, temp2;
+    int temp3 = 0;
+    boolean drawFlag = false;
     public void processOpcode(int opcode) throws IOException {
         int new_op = opcode & 0xf000;
         int ins ;
@@ -18,7 +23,6 @@ public class InstructionSet {
         This will be put in a while loop, it goes through each of the opcodes and
         then does the associated operand
         */
-
         switch (new_op)
         {
             case 0x0000:
@@ -203,9 +207,45 @@ public class InstructionSet {
                 m.setPC(m.getPC()+2);
                 break;
 
-            case 0xD000:
-                System.out.println("Image produced here");
-                m.setPC(m.getPC()+2);
+            case 0xD000:		   
+                
+                int x = m.getVx((opcode & 0x0F00) >> 8);
+                int y = m.getVx((opcode & 0x00F0) >> 4);
+                int height = opcode & 0x000F;
+                int pixel;
+                 
+                    m.setVx(0xF, 0);
+                    for (int yline = 0; yline < height; yline++)
+                    {
+                    pixel = m.getBinItem(yline);
+                    for(int xline = 0; xline < 8; xline++)
+                    {
+                        if((pixel & (0x80 >> xline)) != 0)
+                        {
+                        if(m.getBinItem((x + xline + ((y + yline) * 64))) == 1)
+                            m.setVx(0xF, 1); 
+                            temp3 = x + xline + ((y + yline) * 64);                            
+                        m.setBinItem(temp3, pixel);
+                        }
+                    }
+                    }
+                    
+                    drawFlag = true;
+                    m.setPC(m.getPC() + 2);
+                
+                  
+
+                    FileWriter writer = new FileWriter("input" + "_" + file_count + ".txt");
+                    int arr[] = m.getBin();
+                    int len = arr.length;
+                    for (int i = 0; i < len; i++) {
+                        writer.write(arr[i] + "\t"+ "");
+                    }
+                    writer.close();
+                    
+                    file_count++;
+                    
+                    
                 break;
 
             case 0xE000:
