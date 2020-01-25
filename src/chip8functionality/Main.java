@@ -17,6 +17,7 @@ public class Main extends JPanel {
         MemoryMap m = new MemoryMap();
 
         Draw g = new Draw();
+        m.setDraw(g);
 
         JFrame app = new JFrame("CHIP8");
         app.add(g, BorderLayout.CENTER);
@@ -39,7 +40,6 @@ public class Main extends JPanel {
             int x = m.getMemory(m.getPC());
             i.processOpcode(x);
             System.out.println(x);
-            g.randomizeArray();
 
             try {
                 Thread.sleep(1000);
@@ -49,8 +49,8 @@ public class Main extends JPanel {
             }
 
             g.repaint();
+            m.setDraw(g);
 
-            
         }
     }
 }

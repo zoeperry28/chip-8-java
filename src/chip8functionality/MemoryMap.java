@@ -13,30 +13,39 @@ public class MemoryMap {
     static int memory[] = new int[4096];
     public int Vx[] = new int[16];
     static int stack[] = new int[16];
-    public int I[] = new int[16];
+    public int I = 0 ;
     public int start_of_ram = 0x0000;
     public int start_of_rom = 0x0200;
 
     Path fileLocation = Paths.get("fontset.bin");
     byte[] chip8_fontset;
-    
-    public int bin[] = randomBin();
+    Draw g; 
+    public int[][] bin = randomBin();
     static int pc = 0x200;
     int sp = 0x0;
 
-    /*
-     * This could get messy....
-    */
-    public int[] randomBin () 
+
+    Draw getDraw()
     {
-        int temp [] = new int [2048];
+        return this.g;
+    }
+
+    void setDraw(Draw draw)
+    {
+        this.g = draw;
+    }
+    //DEBUG ONLY
+    public int[][] randomBin () 
+    {
+        int[][] temp = new int[64][32];
 
         Random rand = new Random();
         
-        for (int i = 0; i < 2048; i++)
-        {
-            temp[i] = 0 + rand.nextInt((1 - 0) + 1);
-        }
+        for (int row = 0; row < temp.length; row++) { 
+            for (int col = 0; col < temp[row].length; col++) {
+                    temp[row][col] = 0 + rand.nextInt((1 - 0) + 1);
+                }
+             }
         // Write the bytes to the array 
         return temp; 
     }
@@ -45,24 +54,27 @@ public class MemoryMap {
     {
         chip8_fontset = font;
     }
-    public int[] getBin() {
+    public int[][] getBin() {
         return bin;
     }
 
-    void setBin(int[] new_bin) {
+    void setBin(int[][] new_bin) {
         for (int p = 0; p < bin.length; p++)
         {
+            for (int q = 0; q < bin.length; q++)
+            {
             bin[p] = new_bin[p];
+            }
         }
     }
 
-    void setBinItem(int item, int loc) {
-        bin[loc] = item;
+    void setBinItem(int item, int locx, int locy) {
+        bin[locx][locy] = item;
     }
 
-    int getBinItem(int loc)
+    int getBinItem(int locx, int locy)
     {
-        return bin[loc];
+        return bin[locx][locy];
     }
 
     int[] getStack() {
@@ -77,12 +89,12 @@ public class MemoryMap {
         return chip8_fontset;
     }
 
-    int getI(int loc) {
-        return this.I[loc];
+    int getI() {
+        return this.I;
     }
 
-    void setI(int newI, int loc) {
-        this.I[loc] = newI;
+    void setI(int newI) {
+        this.I = newI;
     }
 
     int getSP() {
@@ -127,14 +139,28 @@ public class MemoryMap {
         memory = new_memory;
     }
 
-    void setMemory (byte [] bytes, int location)
+    void setMemory (byte[] bytes, int location)
     {
         int temp = location;
        for (int i = 0; i < bytes.length; i++ )
-       {
+        {
            memory[temp] = bytes[i];
            temp++;
        }
+    }
+
+    void setMemoryIndividual (byte bytes, int location)
+    {
+        int temp = location;
+
+        memory[temp] = bytes;
+        temp++;
+
+    }
+
+    int getMemoryIndividual(int location)
+    {
+        return memory[location];
     }
 
     int getStartOfRam()

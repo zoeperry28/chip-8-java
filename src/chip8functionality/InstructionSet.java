@@ -10,7 +10,8 @@ public class InstructionSet {
     // write out array of all the instructions available by number
 
     int file_count = 0 ; 
-
+    Main m = new Main();
+ 
     int temp1, temp2;
     int temp3 = 0;
     boolean drawFlag = false;
@@ -35,7 +36,7 @@ public class InstructionSet {
                 {
                     for (int i = 0 ; i < m.getBin().length; i++)
                     {
-                        m.setBinItem(0, i);
+                        //m.setBinItem(0, i);
                     }
                     break;
                 }
@@ -177,7 +178,7 @@ public class InstructionSet {
                 break;
 
             case 0xA000:
-                m.setI(opcode & 0x0FFF, 1);
+                m.setI(opcode & 0x0FFF);
                 System.out.println(new_op);
                 m.setPC(m.getPC()+2);
                 break;
@@ -209,43 +210,34 @@ public class InstructionSet {
 
             case 0xD000:		   
                 
-                int x = m.getVx((opcode & 0x0F00) >> 8);
-                int y = m.getVx((opcode & 0x00F0) >> 4);
-                int height = opcode & 0x000F;
-                int pixel;
-                 
-                    m.setVx(0xF, 0);
-                    for (int yline = 0; yline < height; yline++)
-                    {
-                    pixel = m.getBinItem(yline);
-                    for(int xline = 0; xline < 8; xline++)
-                    {
-                        if((pixel & (0x80 >> xline)) != 0)
-                        {
-                        if(m.getBinItem((x + xline + ((y + yline) * 64))) == 1)
-                            m.setVx(0xF, 1); 
-                            temp3 = x + xline + ((y + yline) * 64);                            
-                        m.setBinItem(temp3, pixel);
-                        }
-                    }
-                    }
-                    
-                    drawFlag = true;
-                    m.setPC(m.getPC() + 2);
-                
-                  
+            // Dxyn - DRW Vx, Vy, nibble
+            // Display n-byte sprite starting at memory location I at 
+            // (Vx, Vy), set VF = collision.
+            
+            // The interpreter reads n bytes from memory, starting at 
+            // the address stored in I. These bytes are then displayed 
+            // as sprites on screen at coordinates (Vx, Vy). Sprites 
+            // are XORed onto the existing screen. If this causes any 
+            // pixels to be erased, VF is set to 1, otherwise it is set 
+            // to 0. If the sprite is positioned so part of it is outside 
+            // the coordinates of the display, it wraps around to the 
+            // opposite side of the screen.
 
-                    FileWriter writer = new FileWriter("input" + "_" + file_count + ".txt");
-                    int arr[] = m.getBin();
-                    int len = arr.length;
-                    for (int i = 0; i < len; i++) {
-                        writer.write(arr[i] + "\t"+ "");
-                    }
-                    writer.close();
-                    
-                    file_count++;
-                    
-                    
+                int wtf = (opcode & 0x000F);
+                wtf = (m.getI() - wtf) * -1;  
+                byte bytes [] = new byte [wtf] ;
+                for (int i = m.getI(); i < (opcode & 0x000F); i++)
+                {
+                    bytes[i] = (byte) m.getMemoryIndividual(i);
+                    m.setMemoryIndividual(bytes[i], m.getI());
+                }
+              
+                int NO_XOR_val = m.getBinItem((opcode & 0x0F00), (opcode & 0x00F0));
+                int XOR_val = NO_XOR_val ^ (opcode & 0x000F);
+
+                m.setBinItem(XOR_val, (opcode & 0x0F00), (opcode & 0x00F0));
+                 
+                System.out.println("IT DID THE THING");
                 break;
 
             case 0xE000:
@@ -280,31 +272,56 @@ public class InstructionSet {
                         break;
 
                     case 0x001E:
-                        m.setI(m.getI(1) + (m.getVx(opcode & 0x0F00)), 1);
+                        m.setI(m.getI() + m.getVx((opcode & 0x0F00)));
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0029:
+
+                    // Set I = location of sprite for digit Vx.
+
+                    // The value of I is set to the location for the 
+                    // hexadecimal sprite corresponding to the value of Vx.
                         System.out.println("location of sprite");
+                        m.setMemoryIndividual((byte) m.getVx((opcode & 0x0F00)), m.getI());
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0033:
                         temp1 = m.getVx(opcode & 0x0F00);
-                        m.setI(temp1 % 1000,0);
-                        m.setI(temp1 % 100,1);
-                        m.setI(temp1 % 10,2);
+                        
+                        m.setMemoryIndividual((byte) (temp1 % 1000),m.getI());
+                        m.setMemoryIndividual((byte) (temp1 % 100),m.getI()+1);
+                        m.setMemoryIndividual((byte) (temp1 % 10) ,m.getI()+2);
+                        
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0055:
+                        byte memory_loc1 [] = new byte [(opcode & 0x0f00)];
+                        for (int i = 0 ; i < memory_loc1.length; i++)
+                        {
+                            memory_loc1[i] = (byte) m.getVx(i);
+                        }
+                        m.setMemory(memory_loc1, m.getI());
+
                         m.setPC(m.getPC()+2);
                         break;
-                        
-                }
 
+                    case 0x0065:
+                        int temp1 = 0 ; 
+                        while (temp1 != (opcode & 0x0F00))
+                        {
+                            System.out.println("Not sure LMAO");
+                        }
+                        m.setPC(m.getPC()+2);
+                        break;
+                }
+                
                 m.setPC(m.getPC()+2);
                 break;
+
+                
         }
     }
 }
