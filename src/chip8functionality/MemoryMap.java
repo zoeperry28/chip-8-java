@@ -20,7 +20,7 @@ public class MemoryMap {
     Path fileLocation = Paths.get("fontset.bin");
     byte[] chip8_fontset;
     Draw g; 
-    public int[][] bin = randomBin();
+    public int[][] bin = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
     static int pc = 0x200;
     int sp = 0x0;
 
@@ -34,6 +34,33 @@ public class MemoryMap {
     {
         this.g = draw;
     }
+
+    public int[][] ADDBIN (int [] n, int x, int y) 
+    {
+        int[][] temp = new int[64][32];
+        int inc = 0;
+        
+        boolean test = false;
+        for (int row = 0; row < temp.length; row++) { 
+            for (int col = 0; col < temp[row].length; col++) {
+                
+                if ((col == y) && (row  == x || row  == x+1 || row  == x+2  || row  == x+3 || row  == x+4 || row  == x+5 || row  == x+6 || row  == x+7))
+                {
+                    temp[row][col]  = n[inc];
+                    inc++;
+                }
+                else
+                {
+                    temp[row][col] = 0;
+                }
+            
+            }
+        }
+        // Write the bytes to the array 
+        return temp; 
+    }
+
+
     //DEBUG ONLY
     public int[][] randomBin () 
     {

@@ -235,7 +235,15 @@ public class InstructionSet {
                 int NO_XOR_val = m.getBinItem((opcode & 0x0F00), (opcode & 0x00F0));
                 int XOR_val = NO_XOR_val ^ (opcode & 0x000F);
 
-                m.setBinItem(XOR_val, (opcode & 0x0F00), (opcode & 0x00F0));
+                String x = String.format("%8s", Integer.toBinaryString(1)).replace(" ", "0");
+
+                int test[] = new int[8];
+
+                for(int i = 0; i < 7; i++) {
+                    test[i] = Integer.parseInt(String.valueOf(x.charAt(i)));
+                }
+
+                m.setBin(m.ADDBIN(test, (opcode & 0x0F00), (opcode & 0x00F0)));
                  
                 System.out.println("IT DID THE THING");
                 break;

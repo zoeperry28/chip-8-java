@@ -20,8 +20,8 @@ public class Draw extends JPanel
         g.setColor(Color.black);
 
         int[][] array = new int[64][32];
-        
-        array = m.randomBin();
+        int [] test = {1,0,1,0,0,1,0,1};
+        array = m.ADDBIN(test, 10, 10);
         int x = 0;
         int y = 0;
 
@@ -33,7 +33,7 @@ public class Draw extends JPanel
                 x = 0; 
             }
 
-            if (array[i][j] == 1){
+            if (array[i][j] == 0){
                 g.setColor(Color.BLACK);
                 g.fillRect(y, x, 20, 20);
             }
