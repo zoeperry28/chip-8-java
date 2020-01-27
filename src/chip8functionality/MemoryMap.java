@@ -1,11 +1,9 @@
 package chip8functionality;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MemoryMap {
@@ -20,10 +18,28 @@ public class MemoryMap {
     Path fileLocation = Paths.get("fontset.bin");
     byte[] chip8_fontset;
     Draw g; 
-    public int[][] bin = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+    public static int[][] bin = new int[64][32];
+    
     static int pc = 0x200;
     int sp = 0x0;
 
+    public void initArray()
+    {
+        for(int i=0; i<bin.length; i++)
+        {
+            for(int j=0; j<bin[i].length; j++)
+            {
+                if (i % 2 == 1 || i == 0 ) 
+                {
+                    bin[i][j]=0;
+                }
+                else
+                {
+                    bin[i][j] = 1;
+                }
+            }
+        }
+    }
 
     Draw getDraw()
     {
@@ -40,18 +56,18 @@ public class MemoryMap {
         int[][] temp = new int[64][32];
         int inc = 0;
         
-        boolean test = false;
+        System.out.println(Arrays.toString(n) + " " + x + " " + y);
         for (int row = 0; row < temp.length; row++) { 
             for (int col = 0; col < temp[row].length; col++) {
                 
-                if ((col == y) && (row  == x || row  == x+1 || row  == x+2  || row  == x+3 || row  == x+4 || row  == x+5 || row  == x+6 || row  == x+7))
+                if ((col >= x) && (col <= (x+7) && inc <= 7))
                 {
                     temp[row][col]  = n[inc];
                     inc++;
                 }
                 else
                 {
-                    temp[row][col] = 0;
+                    temp[row][col] = bin[row][col];
                 }
             
             }
@@ -86,11 +102,10 @@ public class MemoryMap {
     }
 
     void setBin(int[][] new_bin) {
-        for (int p = 0; p < bin.length; p++)
-        {
-            for (int q = 0; q < bin.length; q++)
-            {
-            bin[p] = new_bin[p];
+
+        for(int i=0; i<bin.length-1; i++){
+            for(int j=0; j<bin[i].length-1; j++){
+                bin[i][j]=new_bin[i][j];
             }
         }
     }

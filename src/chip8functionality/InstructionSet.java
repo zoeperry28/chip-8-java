@@ -66,7 +66,7 @@ public class InstructionSet {
                 break;
 
             case 0x4000:
-                temp1 = opcode & 0x0F00;
+                temp1 = (opcode & 0x0F00 >> 8);
                 temp2 = opcode & 0x00FF;
                 if ((m.getVx(temp1) == (temp2)))
                 {
@@ -104,7 +104,7 @@ public class InstructionSet {
                 switch (temp1)
                 {
                     case 0x0000:
-                        m.setVx(opcode & 0x0F00, opcode & 0x00F0);
+                        m.setVx((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4));
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -120,7 +120,7 @@ public class InstructionSet {
                         break;
 
                     case 0x0003:
-                        m.setVx(opcode & 0x0F00, ((opcode & 0x0F00) ^ (opcode & 0x00F0)));
+                        m.setVx((opcode & 0x0F00 >> 8), ((opcode & 0x0F00 >> 8) ^ (opcode & 0x00F0 >> 4)));
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -135,11 +135,11 @@ public class InstructionSet {
                                 m.setPC(m.getPC()+2);
                             }
                         temp2 = temp2 & 0x00FF;
-                        m.setVx(opcode & 0x0F00, temp2);
+                        m.setVx((opcode & 0x0F00 >> 8), temp2);
                         break;
 
                     case 0x0005:
-                        temp1 = (opcode & 0x0F00) - (opcode & 0x00F0);
+                        temp1 = (opcode & 0x0F00 >> 8) - (opcode & 0x00F0 >> 4);
                         if ((opcode & 0x0F00) > (opcode & 0x00F0)) {
                             m.setVx(0xF, 1);
                         }
@@ -147,7 +147,7 @@ public class InstructionSet {
                             m.setVx(0xF, 0);
                         }
                         temp2 = temp1 & 0x00FF;
-                        m.setVx(opcode & 0x0F00, temp2);
+                        m.setVx((opcode & 0x0F00 >> 8), temp2);
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -232,19 +232,24 @@ public class InstructionSet {
                     m.setMemoryIndividual(bytes[i], m.getI());
                 }
               
-                int NO_XOR_val = m.getBinItem((opcode & 0x0F00), (opcode & 0x00F0));
+                int NO_XOR_val = m.getBinItem((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4));
                 int XOR_val = NO_XOR_val ^ (opcode & 0x000F);
 
-                String x = String.format("%8s", Integer.toBinaryString(1)).replace(" ", "0");
+                String x = String.format("%8s", Integer.toBinaryString(XOR_val)).replace(' ', '0');
 
                 int test[] = new int[8];
 
                 for(int i = 0; i < 7; i++) {
-                    test[i] = Integer.parseInt(String.valueOf(x.charAt(i)));
+                    test[i] = Integer.parseInt(x.substring(i));
                 }
 
-                m.setBin(m.ADDBIN(test, (opcode & 0x0F00), (opcode & 0x00F0)));
-                 
+                temp1 = opcode & 0x0F00;
+                temp2 = opcode & 0x00F0;
+
+                m.setBin(m.ADDBIN(test, temp1, temp2));
+                
+                m.setPC(m.getPC()+2);
+            
                 System.out.println("IT DID THE THING");
                 break;
 
@@ -280,7 +285,7 @@ public class InstructionSet {
                         break;
 
                     case 0x001E:
-                        m.setI(m.getI() + m.getVx((opcode & 0x0F00)));
+                        m.setI(m.getI() + m.getVx((opcode & 0x0F00 >> 8)));
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -318,10 +323,10 @@ public class InstructionSet {
 
                     case 0x0065:
                         int temp1 = 0 ; 
-                        while (temp1 != (opcode & 0x0F00))
-                        {
-                            System.out.println("Not sure LMAO");
-                        }
+                        // while (temp1 != (opcode & 0x0F00))
+                        // {
+                        //     System.out.println("Not sure LMAO");
+                        // }
                         m.setPC(m.getPC()+2);
                         break;
                 }

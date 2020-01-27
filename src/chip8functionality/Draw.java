@@ -17,11 +17,7 @@ public class Draw extends JPanel
     public void paintComponent(Graphics g) 
     {
         super.paintComponent(g);
-        g.setColor(Color.black);
-
-        int[][] array = new int[64][32];
-        int [] test = {1,0,1,0,0,1,0,1};
-        array = m.ADDBIN(test, 10, 10);
+        int[][] array = m.getBin();
         int x = 0;
         int y = 0;
 
@@ -43,19 +39,9 @@ public class Draw extends JPanel
             }
             
             x+=20;
-
         }
-
-        }
-        
+        }   
     }
-
-    void drawPixel(int x, int y)
-    {
-
-    } 
-
-
 }
 
 

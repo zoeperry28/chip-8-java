@@ -41,13 +41,6 @@ public class Main extends JPanel {
             i.processOpcode(x);
             System.out.println(x);
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
             g.repaint();
             m.setDraw(g);
 

@@ -16,6 +16,7 @@ public class RomRead
 
     void initBytes () throws IOException
     {
+        m.initArray();
         Path fileLocation = Paths.get("fontset.bin");
         byte [] chip8_fontset = Files.readAllBytes(fileLocation);
         m.setfont(chip8_fontset);
@@ -25,11 +26,11 @@ public class RomRead
             System.out.println("Enter name of the ROM");
             BufferedReader reader =
             new BufferedReader(new InputStreamReader(System.in));
-            String romName = reader.readLine();
+            
             init++;
         }
 
-        rom = Files.readAllBytes(Paths.get("particle.ch8"));
+        rom = Files.readAllBytes(Paths.get("pong.rom"));
         this.setBytes();
     }
 
