@@ -9,7 +9,7 @@ import java.util.Random;
 public class MemoryMap {
 
     static int memory[] = new int[4096];
-    public int Vx[] = new int[16];
+    public int Vx[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     static int stack[] = new int[16];
     public int I = 0 ;
     public int start_of_ram = 0x0000;
@@ -18,7 +18,8 @@ public class MemoryMap {
     Path fileLocation = Paths.get("fontset.bin");
     byte[] chip8_fontset;
     Draw g; 
-    public static int[][] bin = new int[64][32];
+    public 
+    static int[][] bin = new int[64][32];
     
     static int pc = 0x200;
     int sp = 0x0;
@@ -35,7 +36,7 @@ public class MemoryMap {
                 }
                 else
                 {
-                    bin[i][j] = 1;
+                    bin[i][j] = 0;
                 }
             }
         }
@@ -72,6 +73,7 @@ public class MemoryMap {
             
             }
         }
+        Draw.setVisibleGraphics(temp);
         // Write the bytes to the array 
         return temp; 
     }

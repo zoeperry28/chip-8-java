@@ -209,31 +209,17 @@ public class InstructionSet {
                 break;
 
             case 0xD000:		   
-                
-            // Dxyn - DRW Vx, Vy, nibble
-            // Display n-byte sprite starting at memory location I at 
-            // (Vx, Vy), set VF = collision.
-            
-            // The interpreter reads n bytes from memory, starting at 
-            // the address stored in I. These bytes are then displayed 
-            // as sprites on screen at coordinates (Vx, Vy). Sprites 
-            // are XORed onto the existing screen. If this causes any 
-            // pixels to be erased, VF is set to 1, otherwise it is set 
-            // to 0. If the sprite is positioned so part of it is outside 
-            // the coordinates of the display, it wraps around to the 
-            // opposite side of the screen.
 
-                int wtf = (opcode & 0x000F);
-                wtf = (m.getI() - wtf) * -1;  
+                int wtf = (m.getI() - (opcode & 0x000F)) * -1;  
                 byte bytes [] = new byte [wtf] ;
+
                 for (int i = m.getI(); i < (opcode & 0x000F); i++)
                 {
                     bytes[i] = (byte) m.getMemoryIndividual(i);
                     m.setMemoryIndividual(bytes[i], m.getI());
                 }
               
-                int NO_XOR_val = m.getBinItem((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4));
-                int XOR_val = NO_XOR_val ^ (opcode & 0x000F);
+                int XOR_val = m.getBinItem((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4)) ^ (opcode & 0x000F);
 
                 String x = String.format("%8s", Integer.toBinaryString(XOR_val)).replace(' ', '0');
 
@@ -243,14 +229,12 @@ public class InstructionSet {
                     test[i] = Integer.parseInt(x.substring(i));
                 }
 
-                temp1 = opcode & 0x0F00;
-                temp2 = opcode & 0x00F0;
+                temp1 = opcode & 0x0F00 >> 8;
+                temp2 = opcode & 0x00F0 >> 4;
 
-                m.setBin(m.ADDBIN(test, temp1, temp2));
-                
+                m.setBin(m.ADDBIN(test, temp1, temp2));    
                 m.setPC(m.getPC()+2);
             
-                System.out.println("IT DID THE THING");
                 break;
 
             case 0xE000:
@@ -314,9 +298,9 @@ public class InstructionSet {
                         byte memory_loc1 [] = new byte [(opcode & 0x0f00)];
                         for (int i = 0 ; i < memory_loc1.length; i++)
                         {
-                            memory_loc1[i] = (byte) m.getVx(i);
+                           // memory_loc1[i] = (byte) m.getVx(i);
                         }
-                        m.setMemory(memory_loc1, m.getI());
+                       // m.setMemory(memory_loc1, m.getI());
 
                         m.setPC(m.getPC()+2);
                         break;
