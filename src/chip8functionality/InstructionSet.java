@@ -15,7 +15,9 @@ public class InstructionSet {
     int temp1, temp2;
     int temp3 = 0;
     boolean drawFlag = false;
-    public void processOpcode(int opcode) throws IOException {
+  
+    public void processOpcode(int opcode) throws IOException 
+    {
         int new_op = opcode & 0xf000;
         int ins ;
         MemoryMap m = new MemoryMap();
@@ -30,19 +32,19 @@ public class InstructionSet {
                 if (opcode != 0x00E0 && opcode != 0x0EE)
                 {
                     ins = opcode & 0x0FFF;
+                    m.initArray();
                     break;
                 }
-                else if (opcode == 0x00E0)
+                else if (opcode == 0x00E0 || opcode == 0x00EE)
                 {
-                    for (int i = 0 ; i < m.getBin().length; i++)
-                    {
-                        //m.setBinItem(0, i);
-                    }
-                    break;
+                    m.setPC(m.getStackItem(m.getSP()));
+                    m.setSP(m.getSP()-1);
+                    break; 
                 }
                 else {
                     return;
                 }
+
             case 0x1000:
                 ins = opcode & 0x0FFF;
                 m.setPC(ins);
@@ -56,16 +58,6 @@ public class InstructionSet {
                 break;
 
             case 0x3000:
-                temp1 = (opcode & 0x0F00 << 8);
-                temp2 = opcode & 0x00FF;
-                if ((m.getVx(temp1) != (temp2)))
-                {
-                    m.setPC(m.getPC()+2);
-                }
-                m.setPC(m.getPC()+2);
-                break;
-
-            case 0x4000:
                 temp1 = (opcode & 0x0F00 >> 8);
                 temp2 = opcode & 0x00FF;
                 if ((m.getVx(temp1) == (temp2)))
@@ -75,9 +67,19 @@ public class InstructionSet {
                 m.setPC(m.getPC()+2);
                 break;
 
+            case 0x4000:
+                temp1 = (opcode & 0x0F00 >> 8);
+                temp2 = opcode & 0x00FF;
+                if ((m.getVx(temp1) != (temp2)))
+                {
+                    m.setPC(m.getPC()+2);
+                }
+                m.setPC(m.getPC()+2);
+                break;
+
             case 0x5000:
-                temp1  = opcode & 0x0F00;
-                temp2  = opcode & 0x00F0;
+                temp1  = opcode & 0x0F00 >> 8;
+                temp2  = opcode & 0x00F0 >> 4;
                 if (temp1 == temp2)
                 {
                     m.setPC(m.getPC()+2);
@@ -86,7 +88,7 @@ public class InstructionSet {
                 break;
 
             case 0x6000:
-                temp1 = opcode & 0x0F00;
+                temp1 = opcode & 0x0F00 >> 8;
                 temp2 = opcode & 0x00FF;
                // m.setVx(temp1, temp2);
                 m.setPC(m.getPC()+2);
@@ -94,7 +96,7 @@ public class InstructionSet {
 
             case 0x7000:
                 temp1 = opcode & 0x00FF;
-                temp2 = (opcode & 0x0F00 << 8);
+                temp2 = (opcode & 0x0F00 >> 8);
                 m.setVx(m.getVx(temp2), m.getVx(temp2) + temp1);
                 m.setPC(m.getPC()+2);
                 break;
@@ -109,13 +111,13 @@ public class InstructionSet {
                         break;
 
                     case 0x0001:
-                        m.setVx(opcode & 0x0F00, ((opcode & 0x0F00) | (opcode & 0x00F0)));
+                        m.setVx((opcode & 0x0F00 >> 8), ((opcode & 0x0F00 >> 8) | (opcode & 0x00F0 >> 4)));
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0002:
                         temp1 = (opcode & 0x0F00 >> 8 ) ;
-                        m.setVx(temp1, (temp1 & (opcode & 0x00F0)));
+                        m.setVx(temp1, (temp1 & (opcode & 0x00F0 >> 4)));
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -125,7 +127,7 @@ public class InstructionSet {
                         break;
 
                     case 0x0004:
-                        temp2 = (opcode & 0x0F00) + (opcode & 0x00F0);
+                        temp2 = (opcode & 0x0F00 >> 8) + (opcode & 0x00F0 >> 4);
                             if (temp2 > 255) {
                                 m.setVx(0xF, 1);
                                 m.setPC(m.getPC()+2);
@@ -140,7 +142,7 @@ public class InstructionSet {
 
                     case 0x0005:
                         temp1 = (opcode & 0x0F00 >> 8) - (opcode & 0x00F0 >> 4);
-                        if ((opcode & 0x0F00) > (opcode & 0x00F0)) {
+                        if ((opcode & 0x0F00 >> 8) > (opcode & 0x00F0 >> 4)) {
                             m.setVx(0xF, 1);
                         }
                         else {
@@ -195,7 +197,7 @@ public class InstructionSet {
             // Sets VX to the result of a bitwise and operation on a 
             // random number (Typically: 0 to 255) and NN.
             
-            System.out.println(new_op);
+                System.out.println(new_op);
                 Random rand = new Random();
                 temp1 = rand.nextInt(0xFF);
 
@@ -239,17 +241,32 @@ public class InstructionSet {
 
             case 0xE000:
                 System.out.println(new_op);
-                //TODO: key presses
+                switch (opcode & 0x00FF)
+                {
+                    case 0x009E:
+                    // Ex9E - SKP Vx
+                    // Skip next instruction if key with the value of Vx is pressed.
+                    // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
+                    
+                        break;
+
+                   
+                    case 0x00A1:
+                    // ExA1 - SKNP Vx
+                    // Skip next instruction if key with the value of Vx is not pressed.
+                    // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
+                        break; 
+                }
                 m.setPC(m.getPC()+2);
                 break;
 
             case 0xF000:
-                System.out.println(new_op + "well....");
+                
                 m.setPC(m.getPC()+2);
                 switch (opcode & 0x00FF)
                 {
                     case 0x0007:
-                        m.setVx(opcode & 0x0F00, time.getDT());
+                        m.setVx((opcode & 0x0F00 >> 8), time.getDT());
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -259,12 +276,12 @@ public class InstructionSet {
                         break;
 
                     case 0x0015:
-                        time.setDT(opcode & 0x0F00);
+                        time.setDT(opcode & 0x0F00 >> 8);
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0018:
-                        time.setST(opcode & 0x0F00);
+                        time.setST(opcode & 0x0F00 >> 8);
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -295,12 +312,13 @@ public class InstructionSet {
                         break;
 
                     case 0x0055:
-                        byte memory_loc1 [] = new byte [(opcode & 0x0f00)];
+                        byte memory_loc1 [] = new byte [(opcode & 0x0f00 >> 8)];
                         for (int i = 0 ; i < memory_loc1.length; i++)
                         {
-                           // memory_loc1[i] = (byte) m.getVx(i);
+                            memory_loc1[i] = (byte) m.getVx(i);
                         }
-                       // m.setMemory(memory_loc1, m.getI());
+                       
+                        m.setMemory(memory_loc1, m.getI());
 
                         m.setPC(m.getPC()+2);
                         break;

@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class Draw extends JPanel 
+public class Draw extends JPanel
 {
     int x = 0;
     int y = 0;

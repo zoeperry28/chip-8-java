@@ -125,6 +125,10 @@ public class MemoryMap {
         return stack;
     }
 
+    int getStackItem(int i) {
+        return stack[i];
+    }
+
     void setStackItem(int location, int value) {
         stack[location] = value;
     }
