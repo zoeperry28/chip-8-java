@@ -18,25 +18,22 @@ public class RomRead
     {
         m.initArray();
         Path fileLocation = Paths.get("fontset.bin");
-        byte [] chip8_fontset = Files.readAllBytes(fileLocation);
+        final byte [] chip8_fontset = Files.readAllBytes(fileLocation);
         m.setfont(chip8_fontset);
         
         if (init == 0)
         {
             System.out.println("Enter name of the ROM");
-            BufferedReader reader =
-            new BufferedReader(new InputStreamReader(System.in));
-            
             init++;
         }
 
-        rom = Files.readAllBytes(Paths.get("pong.rom"));
+        rom = Files.readAllBytes(Paths.get("particle.ch8"));
         this.setBytes();
     }
 
     void setBytes () throws IOException
     {
         m.setMemory(rom, m.getStartOfRom());
-        m.setMemory(m.getFontSet(), 0x050);
+        m.setMemory(m.getFontSet(), 0x00);
     }
 }

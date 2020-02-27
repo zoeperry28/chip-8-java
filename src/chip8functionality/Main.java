@@ -1,13 +1,8 @@
 package chip8functionality;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.concurrent.ThreadFactory;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.Timer;
-import java.awt.event.*;
 
 public class Main extends JPanel {
 
@@ -24,6 +19,8 @@ public class Main extends JPanel {
         app.setSize(1290, 640);
         app.setLocationRelativeTo(null);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        app.addKeyListener(g);
+        app.setFocusable(true);
         app.setVisible(true);
 
         boolean chip8Running = true;
@@ -37,7 +34,8 @@ public class Main extends JPanel {
         }
 
         while (chip8Running) {
-            int x = m.getMemory(m.getPC());
+            int temp = m.getPC();
+            int x = m.getMemory(temp);
             i.processOpcode(x);
             System.out.println(x);
 

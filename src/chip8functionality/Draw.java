@@ -1,16 +1,14 @@
 package chip8functionality;
-
-import java.awt.*;
-
 import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class Draw extends JPanel
+public class Draw extends JPanel implements KeyListener
 {
-    int x = 0;
-    int y = 0;
     private static final long serialVersionUID = 1L;
 
-   
     static MemoryMap m = new MemoryMap();
     static int[][] array = m.getBin();
 
@@ -42,8 +40,34 @@ public class Draw extends JPanel
         }
     }
 
-    static void setVisibleGraphics(int myarray[][]) {
+    static void setVisibleGraphics(int myarray[][]) 
+    {
         array = myarray;
+    }
+
+    /*
+     * When a key is pressed, set the value of the key
+     * in the memory map, as the key value is required
+     * by two of the opcodes. 
+     * 
+     * May need a boolean value in order to denote if the
+     * key value has changed or not. 
+     */ 
+    
+    @Override
+    public void keyTyped(KeyEvent e) 
+    {
+        System.out.println("keyTyped: "+e);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        System.out.println("STUB");
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println("STUB");
     }
 }
 
