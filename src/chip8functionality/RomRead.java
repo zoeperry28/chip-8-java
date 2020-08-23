@@ -27,7 +27,7 @@ public class RomRead
             init++;
         }
 
-        rom = Files.readAllBytes(Paths.get("pong.rom"));
+        rom = Files.readAllBytes(Paths.get("BC_test.ch8"));
         this.setBytes();
     }
 

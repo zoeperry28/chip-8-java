@@ -58,15 +58,19 @@ public class Main extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        int inc = 0 ;
         while (chip8Running) {
             int temp = m.getPC();
             int x = m.getMemory(temp);
             i.processOpcode(x, k);
-            System.out.println(x);
 
             g.repaint();
             m.setDraw(g);
+            //inc++;
+            if(inc == 30)
+            {
+                chip8Running = false;
+            }
 
         }
     }

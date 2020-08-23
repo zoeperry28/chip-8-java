@@ -62,13 +62,18 @@ public class MemoryMap {
                     int tempx = new_x;
                     int tempy = new_y;
 
-                    for (int i = tempx; i < tempx + 7; i++)
-                    {
-                        for (int j = tempy; j < tempy + n.length; j++)
+                        for (int i = 0; i < bindump.length; i++)
                         {
-                            if (bindump[j - new_y].charAt(i) == '1') temp[i][j] = 1;
+                            System.out.println(bindump[i]);
+                            for (int j = 0; j < 8; j++)
+                            {
+                                if (bindump[i].charAt(j) == '1')
+                                {
+                                    temp[tempx+i][tempy+j] = 1;
+                                }
+                            }
+                            System.out.print("\n");
                         }
-                    }
 
                 }
 
@@ -168,12 +173,6 @@ public class MemoryMap {
 
     void setVx(int newVx, int value) {
         Vx[newVx] = value;
-        System.out.println("VX RESULT: ");
-        for (int i = 0 ; i < Vx.length; i++)
-        {    
-            
-            System.out.print(" " + Vx[i] + " ");
-        }
          
     }
 
