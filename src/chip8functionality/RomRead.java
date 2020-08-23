@@ -27,7 +27,7 @@ public class RomRead
             init++;
         }
 
-        rom = Files.readAllBytes(Paths.get("particle.ch8"));
+        rom = Files.readAllBytes(Paths.get("pong.rom"));
         this.setBytes();
     }
 

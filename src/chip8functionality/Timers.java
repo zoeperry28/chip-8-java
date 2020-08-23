@@ -29,20 +29,25 @@ public class Timers {
 
         Thread.sleep(1);
         DT--;
-        if (DT == 0) return 1;
+        if (DT != 0)
+        {
+            DT = 0;
+            return 1;
+        }
 
         return -1;
     }
 
     int soundTimer () throws InterruptedException
     {
-        if (ST > 0) 
+        if (ST != 0)
         {
             Thread.sleep(1);
             ST--;
         }
         else
         {
+            ST = 0;
             return 1;
         }
         return -1;

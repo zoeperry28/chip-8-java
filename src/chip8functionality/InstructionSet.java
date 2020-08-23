@@ -1,5 +1,6 @@
 package chip8functionality;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Random;
 
@@ -14,7 +15,7 @@ public class InstructionSet {
     int temp3 = 0;
     boolean drawFlag = false;
 
-    public void processOpcode(int opcode) throws IOException {
+    public void processOpcode(int opcode, KeyPressed app) throws IOException, InterruptedException {
         System.out.println(opcode);
         int new_op = opcode & 0xf000;
         int ins;
@@ -118,10 +119,8 @@ public class InstructionSet {
 
             case 0x7000:
                 temp1 = opcode & 0x00FF;
-                System.out.println("TEMPVAL : " + temp1);
                 temp2 = (opcode & 0x0F00 >> 2);
                 temp2 = temp2 & 0xF00 >> 8;
-                System.out.println("TEMPVAL : " + temp2);
                 m.setVx(m.getVx(temp2), m.getVx(temp2) + temp1);
                 m.setPC(m.getPC()+2);
                 break;
@@ -238,33 +237,32 @@ public class InstructionSet {
                 m.setPC(m.getPC()+2);
                 break;
 
-            case 0xD000:		   
+            case 0xD000:
+                int X_VAL = (opcode & 0x0F00);
+                int Y_VAL = (opcode & 0x00F0) >> 4;
+                int N_VAL = (opcode & 0x000F);
+                byte bytes [] = new byte[N_VAL];
+                /*
+                The two registers passed to this instruction determine the x and y location of the
+                sprite on the screen. If the sprite is to be visible on the screen, the VX register
+                must contain a value between 00 and 3F, and the VY register must contain a value
+                between 00 and 1F.
+                */
 
-                int wtf = (m.getI() - (opcode & 0x000F)) * -1;  
-                byte bytes [] = new byte [wtf] ;
-
-                for (int i = m.getI(); i < (opcode & 0x000F); i++)
+                if ((m.getVx(X_VAL) > 0x00 && m.getVx(X_VAL) < 0x3F) && (m.getVx(Y_VAL) > 0x00 && m.getVx(Y_VAL) < 0x1F));
                 {
-                    bytes[i] = (byte) m.getMemoryIndividual(i);
-                    m.setMemoryIndividual(bytes[i], m.getI());
-                }
-              
-                int XOR_val = m.getBinItem((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4)) ^ (opcode & 0x000F);
+                    int temp = 0 ;
+                    for (int i = m.getI(); (i < m.getI() + N_VAL); i++)
+                    {
+                        bytes[temp] = (byte) (m.getBinItem((opcode & 0x0F00 >> 8), (opcode & 0x00F0 >> 4)) ^ (opcode & 0x000F));
+                        temp++;
+                    }
 
-                String x = String.format("%8s", Integer.toBinaryString(XOR_val)).replace(' ', '0');
+                    m.ADDBIN(bytes,  X_VAL, Y_VAL);
 
-                int test[] = new int[8];
-
-                for(int i = 0; i < 8; i++) {
-                    test[i] = Character.getNumericValue(x.charAt(i));
                 }
 
-                temp1 = opcode & 0x0F00 >> 8;
-                temp2 = opcode & 0x00F0 >> 4;
-
-                m.setBin(m.ADDBIN(test, temp1, temp2));    
                 m.setPC(m.getPC()+2);
-            
                 break;
 
             case 0xE000:
@@ -276,7 +274,7 @@ public class InstructionSet {
                     // Ex9E - SKP Vx
                     // Skip next instruction if key with the value of Vx is pressed.
                     // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
-                    
+
                         break;
 
                    
@@ -291,7 +289,7 @@ public class InstructionSet {
                 break;
 
             case 0xF000:
-                
+
                 m.setPC(m.getPC()+2);
                 switch (opcode & 0x00FF)
                 {
@@ -302,16 +300,25 @@ public class InstructionSet {
 
                     case 0x000A:
                         System.out.println("Store a keypress");
-                        m.setPC(m.getPC()+2);
+
+                        if(app.current_key != 0x0) {
+                            m.setVx((opcode & 0x0F00), app.current_key);
+                            m.setPC(m.getPC() + 2);
+                            break;
+                        }
+
                         break;
 
                     case 0x0015:
                         time.setDT(opcode & 0x0F00 >> 8);
+                        time.delayTimer();
                         m.setPC(m.getPC()+2);
                         break;
 
                     case 0x0018:
+
                         time.setST(opcode & 0x0F00 >> 8);
+                        time.soundTimer();
                         m.setPC(m.getPC()+2);
                         break;
 
@@ -351,13 +358,26 @@ public class InstructionSet {
                         m.setPC(m.getPC()+2);
                         break;
 
+                        /*
+                        Fill registers V0 to VX inclusive with the values stored in memory starting at address I
+                        I is set to I + X + 1 after operation
+                         */
                     case 0x0065:
+                        byte memory_loc [] = new byte [(opcode & 0x0f00 >> 8)];
                         int temp1 = 0 ;
+                        int new_i = m.getI();
+                        for (int i = 0; i < memory_loc.length; i++)
+                        {
+                            m.setVx(i, m.getMemory(new_i));
+                            new_i++;
+                        }
+
+                        m.setI(((byte) m.getI()) + (opcode & 0x0f00 >> 8) + (byte) 1);
                         m.setPC(m.getPC()+2);
                         break;
                 }
                 
-                m.setPC(m.getPC()+2);
+                //m.setPC(m.getPC()+2);
                 break;
 
                 

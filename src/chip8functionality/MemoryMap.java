@@ -43,23 +43,40 @@ public class MemoryMap {
         this.g = draw;
     }
 
-    public int[][] ADDBIN(int[] n, int x, int y) {
+    public int[][] ADDBIN(byte[] n, int x, int y) {
         int[][] temp = new int[64][32];
         int inc = 0;
+        String [] bindump = new String[n.length];
 
         System.out.println(Arrays.toString(n) + " " + x + " " + y);
-        for (int row = 0; row < temp.length; row++) {
-            for (int col = 0; col < temp[row].length; col++) {
 
-                if ((col >= x) && (col <= (x + 7) && inc <= 7)) {
-                    temp[row][col] = n[inc];
-                    inc++;
-                } else {
-                    temp[row][col] = bin[row][col];
+        for(int k = 0 ; k < n.length; k++) {
+            bindump[k] = String.format("%8s", Integer.toBinaryString(n[k] & 0xFF)).replace(' ', '0');
+        }
+
+        int index = 0;
+        for (int new_x = 0 ; new_x < temp[0].length; new_x++){
+            for (int new_y = 0 ; new_y < temp.length; new_y++){
+
+                if((new_x == x) && (new_y == y)) {
+                    int tempx = new_x;
+                    int tempy = new_y;
+
+                    for (int i = tempx; i < tempx + 7; i++)
+                    {
+                        for (int j = tempy; j < tempy + n.length; j++)
+                        {
+                            if (bindump[j - new_y].charAt(i) == '1') temp[i][j] = 1;
+                        }
+                    }
+
                 }
+
 
             }
         }
+
+
         Draw.setVisibleGraphics(temp);
         // Write the bytes to the array
         return temp;
