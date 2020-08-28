@@ -61,8 +61,11 @@ public class Main extends JPanel {
         int inc = 0 ;
         while (chip8Running) {
             int temp = m.getPC();
-            int x = m.getMemory(temp);
-            i.processOpcode(x, k);
+            int x = m.getMemory(temp) & 0x00FF;
+            int second_byte = m.getMemory(temp+1) & 0xFF;
+            int OPCODE = second_byte | ( x << 8);
+
+            i.processOpcode(OPCODE, k);
 
             g.repaint();
             m.setDraw(g);

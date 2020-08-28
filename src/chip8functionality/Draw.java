@@ -40,7 +40,7 @@ public class Draw extends JPanel {
         }
     }
 
-    static void setVisibleGraphics(int myarray[][]) {
+    static void setVisibleGraphics(int[][] myarray) {
         array = myarray;
     }
 
@@ -55,4 +55,3 @@ public class Draw extends JPanel {
 
 
 }
-

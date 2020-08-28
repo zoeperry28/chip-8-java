@@ -20,12 +20,6 @@ public class RomRead
         Path fileLocation = Paths.get("fontset.bin");
         final byte [] chip8_fontset = Files.readAllBytes(fileLocation);
         m.setfont(chip8_fontset);
-        
-        if (init == 0)
-        {
-            System.out.println("Enter name of the ROM");
-            init++;
-        }
 
         rom = Files.readAllBytes(Paths.get("IBM.ch8"));
         this.setBytes();

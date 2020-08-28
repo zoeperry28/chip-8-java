@@ -43,7 +43,8 @@ public class MemoryMap {
         this.g = draw;
     }
 
-    public int[][] ADDBIN(byte[] n, int x, int y) {
+    public int[][] ADDBIN(byte[] n, int x, int y)
+    {
         int[][] temp = new int[64][32];
         int inc = 0;
         String [] bindump = new String[n.length];
@@ -55,10 +56,11 @@ public class MemoryMap {
         }
 
         int index = 0;
-        for (int new_x = 0 ; new_x < temp[0].length; new_x++){
             for (int new_y = 0 ; new_y < temp.length; new_y++){
 
-                if((new_x == x) && (new_y == y)) {
+                for (int new_x = 0 ; new_x < temp[0].length; new_x++){
+
+                    if((new_x == x) && (new_y == y)) {
                     int tempx = new_x;
                     int tempy = new_y;
 
@@ -81,16 +83,16 @@ public class MemoryMap {
 
             }
         }
-
         for (int i = 0; i < 64; i++)
         {
             for(int j = 0; j < 32; j++)
             {
-                temp[i][j] = temp[i][j] ^ g.array[i][j];
+
+                this.setBinItem(getBinItem(i,j) ^ temp[j][i], i , j);
             }
         }
 
-        Draw.setVisibleGraphics(temp);
+        Draw.setVisibleGraphics(this.getBin());
         // Write the bytes to the array
         return temp;
     }
@@ -186,7 +188,7 @@ public class MemoryMap {
 
     int getMemory (int loc)
     {
-        int opcode = memory[loc] << 8 | memory[loc + 1];
+        int opcode = memory[loc] << 8 | memory[loc];
         return opcode;
     }
 
