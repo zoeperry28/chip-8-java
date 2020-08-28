@@ -69,6 +69,7 @@ public class MemoryMap {
                             {
                                 if (bindump[i].charAt(j) == '1')
                                 {
+
                                     temp[tempx+i][tempy+j] = 1;
                                 }
                             }
@@ -81,6 +82,13 @@ public class MemoryMap {
             }
         }
 
+        for (int i = 0; i < 64; i++)
+        {
+            for(int j = 0; j < 32; j++)
+            {
+                temp[i][j] = temp[i][j] ^ g.array[i][j];
+            }
+        }
 
         Draw.setVisibleGraphics(temp);
         // Write the bytes to the array
