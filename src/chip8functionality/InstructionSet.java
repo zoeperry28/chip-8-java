@@ -16,7 +16,7 @@ public class InstructionSet {
     MemoryMap m = new MemoryMap();
     Timers time = new Timers();
 
-    public void processOpcode(int opcode, KeyPressed app) throws IOException, InterruptedException {
+    public Draw processOpcode(int opcode, KeyPressed app, Draw g) throws IOException, InterruptedException {
 
         int new_op = opcode & 0xf000;
         /*
@@ -295,11 +295,11 @@ public class InstructionSet {
                     temp++;
                 }
 
-                m.ADDBIN(bytes, X_VAL, Y_VAL);
+                g = m.ADDBIN(bytes, X_VAL, Y_VAL, g);
 
 
                 m.setPC(m.getPC() + 2);
-                break;
+                return g;
 
 
             case 0xE000:
@@ -427,5 +427,6 @@ public class InstructionSet {
 
         }
 
+        return g;
     }
 }

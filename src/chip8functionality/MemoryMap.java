@@ -19,7 +19,7 @@ public class MemoryMap {
     byte[] chip8_fontset;
     Draw g;
     public static int[][] bin = new int[64][32];
-
+    public int num_of_sprites = 0 ;
     static int pc = 0x200;
     int sp = 0x0;
 
@@ -43,58 +43,37 @@ public class MemoryMap {
         this.g = draw;
     }
 
-    public int[][] ADDBIN(byte[] n, int x, int y)
+
+    public Draw ADDBIN(byte[] n, int x, int y, Draw g)
     {
         int[][] temp = new int[64][32];
-        int inc = 0;
+        int inc_n = 0;
+        int inc_bit = 0;
         String [] bindump = new String[n.length];
-
-        System.out.println(Arrays.toString(n) + " " + x + " " + y);
-
         for(int k = 0 ; k < n.length; k++) {
             bindump[k] = String.format("%8s", Integer.toBinaryString(n[k] & 0xFF)).replace(' ', '0');
         }
-
-        int index = 0;
-            for (int new_y = 0 ; new_y < temp.length; new_y++){
-
-                for (int new_x = 0 ; new_x < temp[0].length; new_x++){
-
-                    if((new_x == x) && (new_y == y)) {
-                    int tempx = new_x;
-                    int tempy = new_y;
-
-                        for (int i = 0; i < bindump.length; i++)
-                        {
-                            System.out.println(bindump[i]);
-                            for (int j = 0; j < 8; j++)
-                            {
-                                if (bindump[i].charAt(j) == '1')
-                                {
-
-                                    temp[tempx+i][tempy+j] = 1;
-                                }
-                            }
-                            System.out.print("\n");
-                        }
-
-                }
-
-
+        for (int row = ((getNumberOfSprites()*8)  + x); row <  ((getNumberOfSprites()*8)  + x)+(8); row++) {
+            for (int col = y; col < y+n.length; col++) {
+                g.array[row][col] = Character.getNumericValue(bindump[col - y].charAt(row - ((getNumberOfSprites()*8)  + x)));
             }
         }
-        for (int i = 0; i < 64; i++)
-        {
-            for(int j = 0; j < 32; j++)
-            {
-
-                this.setBinItem(getBinItem(i,j) ^ temp[j][i], i , j);
-            }
-        }
-
-        Draw.setVisibleGraphics(this.getBin());
         // Write the bytes to the array
-        return temp;
+        this.num_of_sprites++;
+        for (int[] nx : g.array)
+        {
+            for (int ny : nx)
+            {
+                System.out.print(ny + " ");
+            }
+            System.out.println();
+        }
+        return g;
+    }
+
+    public int getNumberOfSprites()
+    {
+        return this.num_of_sprites;
     }
 
     // DEBUG ONLY

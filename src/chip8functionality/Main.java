@@ -16,7 +16,7 @@ public class Main extends JPanel {
         char KEY_PRESSED = '-';
         MemoryMap m = new MemoryMap();
 
-        Draw g = new Draw();
+        Draw g = new Draw(64,32);
         m.setDraw(g);
 
         JFrame app = new JFrame("CHIP8");
@@ -65,10 +65,9 @@ public class Main extends JPanel {
             int second_byte = m.getMemory(temp+1) & 0xFF;
             int OPCODE = second_byte | ( x << 8);
 
-            i.processOpcode(OPCODE, k);
+            g = i.processOpcode(OPCODE, k, g);
 
             g.repaint();
-            m.setDraw(g);
             //inc++;
             if(inc == 30)
             {

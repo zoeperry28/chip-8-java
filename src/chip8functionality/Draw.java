@@ -8,10 +8,12 @@ import java.awt.event.KeyListener;
 
 public class Draw extends JPanel {
     private static final long serialVersionUID = 1L;
+    static int[][] array;
 
-    static MemoryMap m = new MemoryMap();
-    static int[][] array = m.getBin();
-
+    public Draw(int x, int y)
+    {
+        this.array = new int[x][y];
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -43,6 +45,12 @@ public class Draw extends JPanel {
     static void setVisibleGraphics(int[][] myarray) {
         array = myarray;
     }
+
+    int[][] getVisibleGraphic()
+    {
+        return array;
+    }
+
 
     /*
      * When a key is pressed, set the value of the key
